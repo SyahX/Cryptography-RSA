@@ -14,6 +14,8 @@ struct BigInt {
 	void mod(const BigInt&);
 	void mul(const BigInt&, INT32);
 	void add(BigInt&);
+	bool equals(const BigInt&);
+	bool equalsOne();
 
 	void random(int bits);
 	void output();

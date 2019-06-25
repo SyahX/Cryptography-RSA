@@ -77,6 +77,20 @@ void BigInt::add(BigInt& x) {
 	}
 }
 
+bool BigInt::equals(const BigInt& N) {
+	if (length != N.length) return false;
+	for (int i = 0; i < length; ++i)
+		if (value[i] != N.value[i]) return false;
+	return true;
+}
+
+bool BigInt::equalsOne() {
+	if (value[0] != 1) return false;
+	for (int i = 1; i < length; ++i)
+		if (value[i] != 0) return false;
+	return true;
+}
+
 void BigInt::random(int bits) {
 	length = bits / base;
 	for (int i = 0; i < length; ++i) {

@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "Config.h"
+#include "Prime.h"
 #include "Mont.h"
 
 void TESTA() {
@@ -52,11 +53,20 @@ void TESTB() {
 	r.output();
 }
 
+void TESTC() {
+	PrimeProducer procuder;
+	clock_t start = clock();
+	procuder.getPrime();
+	showTime(start);
+	procuder.prime.output();
+}
+
 
 int main(int argc, char const *argv[])
 {	
 	//TESTA();
-	TESTB();
+	//TESTB();
+	TESTC();
 	
 	return 0;
 }
