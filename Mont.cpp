@@ -43,12 +43,21 @@ void BigInt::set(INT32 x) {
 	value[0] = x;
 }
 
-void BigInt::set(const char*[] st, int b) {
+void BigInt::set(const char* st, int b) {
 	length = 1;
 	value[0] = 0;
 	int len = strlen(st);
+
+	BigInt temp;
 	for (int i = 0; i < len; ++i) {
 		this->mul(b);
+		if (b == 256) temp.set(st[i]);
+		else {
+			if (st[i] >= '0' && st[i] <= '9') temp.set(st[i] - '0');
+			if (st[i] >= 'A' && st[i] <= 'Z') temp.set(st[i] - 'A' + 10);
+			if (st[i] >= 'a' && st[i] <= 'z') temp.set(st[i] - 'a' + 10);
+		}
+		this->add(temp);
 	}
 }
 
@@ -94,6 +103,19 @@ void BigInt::mul(const BigInt& x, INT32 y) {
 	ULL tmp = 0;
 	for (int i = 0; i < length; ++i) {
 		tmp = tmp + (ULL)x.value[i] * y;
+		value[i] = (INT32)tmp;
+		tmp >>= 32;
+	}
+	if (tmp > 0) {
+		value[length] = (INT32)tmp;
+		++length;
+	}
+}
+
+void BigInt::mul(INT32 y) {
+	ULL tmp = 0;
+	for (int i = 0; i < length; ++i) {
+		tmp = tmp + (ULL)value[i] * y;
 		value[i] = (INT32)tmp;
 		tmp >>= 32;
 	}

@@ -10,7 +10,6 @@ void RSA::init() {
 	prime1.copy(producer.prime);
 	producer.getPrime();
 	prime2.copy(producer.prime);
-	printf("-----\n");
 
 	mul(prime1, prime2, N);
 	mont.set(N);
@@ -20,19 +19,14 @@ void RSA::init() {
 	mul(prime1, prime2, phi);
 	prime1.value[0] += 1;
 	prime2.value[0] += 1;
-	
-	//prime1.output();
-	//prime2.output();
-	//N.output();
-	//phi.output();
 }
 
 void RSA::setPublicKey(INT32 key) {
 	pu.set(key);
-	printf("Start Gen private key ... \n");
+	printf("Start Gen private key ... ");
+	clock_t start = clock();
 	getPrivateKey();
-	pr.output();
-	printf("-----\n");
+	printf("use %.3fms\n", (clock() - start) / 1000.0);
 }
 
 void RSA::exGcd(INT32 a, INT32 b, int& x, int& y) {
@@ -53,7 +47,7 @@ void RSA::getPrivateKey() {
  	INT32 b = pr.div(a);
  	int x, y;
 	exGcd(a, b, x, y);
-	printf("%d %d\n", x, y);
+	
 	BigInt r;
 	r.set(0);
 	for (int j = 30; j >= 0; --j) {

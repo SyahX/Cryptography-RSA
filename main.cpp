@@ -97,6 +97,9 @@ void prime() {
 	}
 }
 
+INT32 key;
+char message[100000];
+
 
 int main(int argc, char const *argv[])
 {	
@@ -109,6 +112,29 @@ int main(int argc, char const *argv[])
 	
 	//TESTD();
 	//prime();
+	RSA rsa;
+	rsa.init();
+
+
+	printf("Input your public key (3 ~ 2^32-1) : ");
+	scanf("%u", &key); //65537
+
+	rsa.setPublicKey(key);
+
+	printf("Input your message : ");
+	scanf("%s", message); // moderncryptography
+
+	BigInt m;
+	m.set(message, 256);
+	printf("M : 0x"); m.output();
+
+	BigInt e = rsa.encode(m);
+	printf("Encode : 0x"); e.output();
+
+	BigInt d = rsa.decode(e);
+	d.normal();
+	printf("Decode : 0x"); d.output();
+
 	
 	return 0;
 }

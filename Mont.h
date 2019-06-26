@@ -11,10 +11,12 @@ struct BigInt {
 	~BigInt();
 
 	void set(INT32);
+	void set(const char*, int);
 	void copy(const BigInt&);
 	void mod(const BigInt&);
 	INT32 mod(INT32);
 	void mul(const BigInt&, INT32);
+	void mul(INT32);
 	INT32 div(INT32);
 	void add(BigInt&);
 	void sub(BigInt&);
