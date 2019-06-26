@@ -1,10 +1,12 @@
 #include <cstdio>
 #include <ctime>
 #include <cstdlib>
+#include <cmath>
 
 #include "Config.h"
 #include "Prime.h"
 #include "Mont.h"
+#include "RSA.h"
 
 void TESTA() {
 	BigInt a;
@@ -57,16 +59,56 @@ void TESTC() {
 	PrimeProducer procuder;
 	clock_t start = clock();
 	procuder.getPrime();
+	procuder.getPrime();
 	showTime(start);
 	procuder.prime.output();
+}
+
+void TESTD() {
+	RSA rsa;
+	rsa.init();
+	rsa.setPublicKey(65537);
+	BigInt message;
+	message.random(1024);
+	printf("-----\n");
+	message.output();
+	
+	BigInt t = rsa.encode(message);
+	BigInt r = rsa.decode(t);
+	r.output();
+	if (r == message) printf("pass\n");
+}
+
+void prime() {
+	int cnt = 0, ptr = 3;
+	while (cnt < pNum) {
+		bool flag = true;
+		for (int i = 2; i < int(sqrt(ptr)); ++i)
+			if (ptr % i == 0) {
+				flag = false;
+				break;
+			}
+		if (flag) {
+			++cnt;
+			printf("%d, ", ptr);
+			if (cnt % 10 == 0) printf("\n");
+		}
+		++ptr;
+	}
 }
 
 
 int main(int argc, char const *argv[])
 {	
+	unsigned long long seed = time(0);
+	printf("seed : %lld\n", seed);
+	srand(seed);
 	//TESTA();
 	//TESTB();
-	TESTC();
+	//TESTC();
+	
+	//TESTD();
+	//prime();
 	
 	return 0;
 }

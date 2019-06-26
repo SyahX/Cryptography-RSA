@@ -10,10 +10,19 @@ struct BigInt {
 	BigInt();
 	~BigInt();
 
+	void set(INT32);
 	void copy(const BigInt&);
 	void mod(const BigInt&);
+	INT32 mod(INT32);
 	void mul(const BigInt&, INT32);
+	INT32 div(INT32);
 	void add(BigInt&);
+	void sub(BigInt&);
+	void shl(int p);
+	void shr(int p);
+
+	void normal();
+
 	bool equals(const BigInt&);
 	bool equalsOne();
 
@@ -23,12 +32,14 @@ struct BigInt {
 	static void binary(INT32 x);
 };
 
+bool operator < (BigInt& x, BigInt& y);
+bool operator == (BigInt& x, BigInt& y);
+
 class Mont {
 	BigInt mod;
 	BigInt rho;
 	BigInt rho2;
 	INT32 omega;
-
 	
 	INT32 getOmega();
 

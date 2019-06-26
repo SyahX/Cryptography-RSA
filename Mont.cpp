@@ -6,12 +6,50 @@
 
 using namespace std;
 
+bool operator < (BigInt& x, BigInt& y) {
+	x.normal(); 
+	y.normal();
+	if (x.length < y.length) return true;
+	if (x.length > y.length) return false;
+
+	for (int i = 0; i < x.length; ++i) {
+		if (x.value[i] < y.value[i]) return true;
+		if (x.value[i] > y.value[i]) return false;
+	}
+	return false;
+}
+
+bool operator == (BigInt& x, BigInt& y) {
+	x.normal(); 
+	y.normal();
+	if (x.length != y.length) return false;
+
+	for (int i = 0; i < x.length; ++i) {
+		if (x.value[i] != y.value[i]) return false;
+	}
+	return true;
+}
+
 BigInt::BigInt() {
 	value = new INT32[MAXL];
 }
 
 BigInt::~BigInt() {
 	delete[] value;
+}
+
+void BigInt::set(INT32 x) {
+	length = 1;
+	value[0] = x;
+}
+
+void BigInt::set(const char*[] st, int b) {
+	length = 1;
+	value[0] = 0;
+	int len = strlen(st);
+	for (int i = 0; i < len; ++i) {
+		this->mul(b);
+	}
 }
 
 void BigInt::copy(const BigInt& N) {
@@ -42,6 +80,15 @@ void BigInt::mod(const BigInt& N) {
 	length = N.length;
 }
 
+INT32 BigInt::mod(INT32 p) {
+	ULL tmp = 0;
+	for (int i = length - 1; i >= 0; --i) {
+		tmp = (tmp << 32) + (ULL)value[i];
+		tmp = tmp % p;
+	}
+	return tmp;
+}
+
 void BigInt::mul(const BigInt& x, INT32 y) {
 	length = x.length;
 	ULL tmp = 0;
@@ -54,6 +101,16 @@ void BigInt::mul(const BigInt& x, INT32 y) {
 		value[length] = (INT32)tmp;
 		++length;
 	}
+}
+
+INT32 BigInt::div(INT32 y) {
+	ULL tmp = 0;
+	for (int i = length - 1; i >= 0; --i) {
+		tmp = (tmp << 32) + (ULL)value[i];
+		value[i] = tmp / y;
+		tmp = tmp % y;
+	}
+	return tmp;
 }
 
 void BigInt::add(BigInt& x) {
@@ -75,6 +132,40 @@ void BigInt::add(BigInt& x) {
 		value[length] = (INT32)tmp;
 		++length;
 	}
+}
+
+void BigInt::sub(BigInt& x) {
+	for (int i = x.length; i < length; ++i)
+		x.value[i] = 0;
+	INT32 flag = 0;
+	for (int i = 0; i < length; ++i) {
+		INT32 n1 = value[i] < x.value[i];
+		value[i] -= x.value[i];
+		INT32 n2 = value[i] < flag;
+		value[i] -= flag;
+		flag = n1 + n2;
+	}
+	while (length > 1 && value[length - 1] == 0) --length;
+}
+
+void BigInt::normal() {
+	while (length > 1 && value[length - 1] == 0) --length;
+}
+
+void BigInt::shl(int tmp) {
+	value[length] = (value[length - 1] >> (32 - tmp));
+	for (int i = length - 1; i >= 0; --i) {
+		value[i] = (value[i] << tmp) + (value[i - 1] >> (32 - tmp));
+	}
+	if (value[length] > 0) ++length;
+}
+
+void BigInt::shr(int tmp) {
+	value[length] = 0;
+	for (int i = 0; i < length; ++i) {
+		value[i] = (value[i] >> tmp) + (value[i + 1] << (32 - tmp));
+	}
+	if (length > 1 && value[length - 1] == 0) --length;
 }
 
 bool BigInt::equals(const BigInt& N) {

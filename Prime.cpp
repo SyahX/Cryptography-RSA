@@ -1,22 +1,28 @@
 #include "Prime.h"
 #include <cstdio>
+#include <ctime>
 
 using namespace std;
 
 void PrimeProducer::getPrime() {
-	printf("Start Gen big Prime ... \n");
+	printf("\t[Producer] Start Gen big Prime ... \n");
+	
+	clock_t start = clock();
 	int cnt = 0;
-	while (true) {
-		printf("\ttry %d times ...\n", ++cnt);
+	while (++cnt) {
 		prime.random(bits);
 		if (!simpleTest()) continue;
 		if (hardTest()) break;
-		//break;
 	}
-	printf("After %d times, we find a prime.\n", cnt);
+
+	printf("\t[Producer] After %d times, we find a prime, ", cnt);
+	printf("use %.3fms\n", (clock() - start) / 1000.0);
 }
 
 bool PrimeProducer::simpleTest() {
+	for (int i = 0; i < 1000; ++i)
+		if (prime.mod(pList[i]) == 0)
+			return false;
 	return true;
 }
 
@@ -41,19 +47,20 @@ int PrimeProducer::prepare() {
 	}
 	if (tmp == 0) return cnt * base;
 
-	d.value[0] += (d.value[1] << (32 - tmp));
 	d.value[d.length] = 0;
+	d.value[0] += (d.value[1] << (32 - tmp));
 	for (int i = 1; i < d.length; ++i) {
 		d.value[i] = (d.value[i] >> tmp) + (d.value[i + 1] << (32 - tmp));
 	}
+	while (d.value[d.length - 1] == 0) --d.length;
+
 	return cnt * 32 + tmp;
 }
 
 bool PrimeProducer::hardTest() {
 	int cnt = prepare();
 
-	two.length = 1;
-	two.value[0] = 2;
+	two.set(2);
 	mont.set(prime);
 	for (int i = 0; i < TEST_TIMES; ++i)
 		if (!MillerRabin(cnt))

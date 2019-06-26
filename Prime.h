@@ -5,7 +5,6 @@
 
 class PrimeProducer {
 private:
-	const static int bits = 1024;
 	const static int TEST_TIMES = 10;
 
 	BigInt d;
@@ -15,6 +14,7 @@ private:
 	Mont mont;
 
 public:
+	const static int bits = 1024;
 	BigInt prime;
 
 	void getPrime();
